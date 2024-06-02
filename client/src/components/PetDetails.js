@@ -36,7 +36,7 @@ const PetDetails = () => {
         <div className="container">
             <div className="row my-3">
                 <div className="col text-start">
-                    <h1>Pet Shelter</h1>
+                    <h1>PetPool</h1>
                 </div>
                 <div className="col text-end">
                     <Link to="/pets">Home</Link>
@@ -51,8 +51,8 @@ const PetDetails = () => {
                 </div>
             </div>
             <div className="row border">
-                <div className="">
-                    <div >
+                <div className="row">
+                    <div className="col text-center">
                         <img src={`http://localhost:8000/${pet.imageUrl}`} alt={pet.petName} className="pet-image-details" />
                     </div>
                 </div>
