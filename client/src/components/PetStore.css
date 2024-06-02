@@ -8,6 +8,13 @@
     color: #333;
 }
 
+.search-input {
+    padding: 10px;
+    width: 800px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
 .header {
     display: flex;
     justify-content: space-between;

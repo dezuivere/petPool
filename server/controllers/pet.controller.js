@@ -48,14 +48,11 @@ module.exports = {
                 return response.status(500).json({ message: "Something went wrong with file upload", error: err });
             }
 
-            const { petName, petType, petDescription, petSkillOne, petSkillTwo, petSkillThree } = request.body;
+            const { petName, petType, petDescription} = request.body;
             const newPet = {
                 petName,
                 petType,
                 petDescription,
-                petSkillOne,
-                petSkillTwo,
-                petSkillThree,
                 imageUrl: request.file ? 'uploads/' + request.file.filename : null // Save the relative path of the uploaded image
             };
 
@@ -72,21 +69,41 @@ module.exports = {
     },
 
     updatePet: (request, response) => {
-        Pet.findOneAndUpdate(
-            { _id: request.params.id }, request.body,
-            {
-                new: true,
-                runValidators: true,
+        upload.single('image')(request, response, (err) => {
+            if (err) {
+                console.log("Something went wrong with file upload");
+                return response.status(500).json({ message: "Something went wrong with file upload", error: err });
             }
-        )
-            .then((updatePet) => {
-                console.log(updatePet);
-                response.json(updatePet);
-            })
-            .catch((err) => {
-                console.log("Something went wrong with updatePet");
-                response.status(400).json(err);
-            });
+
+            const { petName, petType, petDescription } = request.body;
+            const updateData = {
+                petName,
+                petType,
+                petDescription
+            };
+
+            if (request.file) {
+                updateData.imageUrl = 'uploads/' + request.file.filename;
+            }
+
+            Pet.findOneAndUpdate(
+                { _id: request.params.id },
+                updateData,
+                {
+                    new: true,
+                    runValidators: true,
+                }
+            )
+                .then((updatePet) => {
+                    console.log(updatePet);
+                    response.json(updatePet);
+                    console.log("successfully updated pet!");
+                })
+                .catch((err) => {
+                    console.log("Something went wrong with updatePet");
+                    response.status(400).json(err);
+                });
+        });
     },
 
     deletePet: (request, response) => {

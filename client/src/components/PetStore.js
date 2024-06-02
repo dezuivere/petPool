@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { FaInfoCircle, FaEdit } from "react-icons/fa"; // Import icons from React Icons
+import { FaInfoCircle, FaEdit, FaSearch } from "react-icons/fa"; // Import icons from React Icons
 import "./PetStore.css";
 
 const PetStore = () => {
   const [allPets, setAllPets] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     axios
@@ -19,17 +20,35 @@ const PetStore = () => {
       });
   }, []);
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredPets = allPets.filter(
+    (pet) =>
+      pet.petName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pet.petType.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="container">
       <div className="header">
         <h1>petPool</h1>
+        <input
+          type="text"
+          placeholder="Search pets..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="search-input"
+        />
+        <FaSearch className="search-icon" />
         <Link to="/pets/new">Add Pet</Link>
       </div>
       <div className="sub-header">
         <h3>These pets are looking for a good home</h3>
       </div>
       <div className="pet-cards">
-        {allPets.map((pet, index) => (
+        {filteredPets.map((pet, index) => (
           <div key={index} className="pet-card">
             <div className="pet-image">
               <img
