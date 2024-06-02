@@ -23,9 +23,7 @@ const PetStore = () => {
     <div className="container">
       <div className="header">
         <h1>Pet Shelter</h1>
-        <Link to="/pets/new">
-          Add Pet
-        </Link>
+        <Link to="/pets/new">Add Pet</Link>
       </div>
       <div className="sub-header">
         <h3>These pets are looking for a good home</h3>
@@ -34,8 +32,12 @@ const PetStore = () => {
         {allPets.map((pet, index) => (
           <div key={index} className="pet-card">
             <div className="pet-image">
-              <img src={pet.imageUrl} alt={pet.petName} />
+              <img
+                src={`http://localhost:8000/${pet.imageUrl}`}
+                alt={pet.petName}
+              />
             </div>
+
             <div className="pet-info">
               <h2>{pet.petName}</h2>
               <p>Type: {pet.petType}</p>

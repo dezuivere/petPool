@@ -1,73 +1,103 @@
 const Pet = require('../models/pet.model');
 const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 const path = require('path');
-const fs = require('fs');
 
 // Multer configuration
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const UPLOADS_DIR = path.join(__dirname, '../uploads');
-        cb(null, UPLOADS_DIR);
+        cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`);
+        cb(null, uuidv4() + path.extname(file.originalname));
     }
 });
 
-const upload = multer({ storage: storage }).single('image');
+const upload = multer({ storage: storage });
 
 module.exports = {
-
-    getAllPets: (req, res) => {
+    getAllPets: (request, response) => {
         Pet.find()
             .sort({ petType: 1 })
-            .then(allPets => res.json(allPets))
-            .catch(err => res.json({ message: "Something went wrong with getAllPets", error: err }));
+            .then((allPets) => {
+                console.log(allPets);
+                response.json(allPets);
+            })
+            .catch((err) => {
+                console.log("Something went wrong with getAllPets");
+                response.json({ message: "Something went wrong with getAllPets", error: err });
+            });
     },
 
-    getOnePet: (req, res) => {
-        Pet.findOne({ _id: req.params.id })
-            .then(onePet => res.json(onePet))
-            .catch(err => res.json({ message: "Something went wrong with getOnePet", error: err }));
+    getOnePet: (request, response) => {
+        Pet.findOne({ _id: request.params.id })
+            .then((onePet) => {
+                console.log(onePet);
+                response.json(onePet);
+            })
+            .catch((err) => {
+                console.log("Something went wrong with getOnePet");
+                response.json({ message: "Something went wrong with getOnePet", error: err });
+            });
     },
 
-    createPet: (req, res) => {
-        upload(req, res, err => {
+    createPet: (request, response) => {
+        upload.single('image')(request, response, (err) => {
             if (err) {
-                console.log("Something went wrong with file upload", err);
-                return res.status(500).json({ message: "Something went wrong with file upload", error: err });
+                console.log("Something went wrong with file upload");
+                return response.status(500).json({ message: "Something went wrong with file upload", error: err });
             }
 
-            const { petName, petType, petDescription } = req.body;
+            const { petName, petType, petDescription, petSkillOne, petSkillTwo, petSkillThree } = request.body;
             const newPet = {
                 petName,
                 petType,
                 petDescription,
-                imageUrl: req.file ? req.file.path : null // Save the path of the uploaded image
+                petSkillOne,
+                petSkillTwo,
+                petSkillThree,
+                imageUrl: request.file ? 'uploads/' + request.file.filename : null // Save the relative path of the uploaded image
             };
 
             Pet.create(newPet)
-                .then(pet => res.json(pet))
-                .catch(err => res.status(400).json(err));
-                console.log("success added pet");
+                .then((pet) => {
+                    console.log(pet);
+                    response.json(pet);
+                })
+                .catch((err) => {
+                    console.log("Something went wrong with createPet");
+                    response.status(400).json(err);
+                });
         });
     },
 
-    updatePet: (req, res) => {
+    updatePet: (request, response) => {
         Pet.findOneAndUpdate(
-            { _id: req.params.id }, req.body,
+            { _id: request.params.id }, request.body,
             {
                 new: true,
                 runValidators: true,
             }
         )
-            .then(updatePet => res.json(updatePet))
-            .catch(err => res.status(400).json(err));
+            .then((updatePet) => {
+                console.log(updatePet);
+                response.json(updatePet);
+            })
+            .catch((err) => {
+                console.log("Something went wrong with updatePet");
+                response.status(400).json(err);
+            });
     },
 
-    deletePet: (req, res) => {
-        Pet.deleteOne({ _id: req.params.id })
-            .then(deletePet => res.json(deletePet))
-            .catch(err => res.json({ message: "Something went wrong with deletePet", error: err }));
+    deletePet: (request, response) => {
+        Pet.deleteOne({ _id: request.params.id })
+            .then((deletePet) => {
+                console.log(deletePet);
+                response.json(deletePet);
+            })
+            .catch((err) => {
+                console.log("Something went wrong with deletePet");
+                response.json({ message: "Something went wrong with deletePet", error: err });
+            });
     }
 };
