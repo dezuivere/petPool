@@ -45,6 +45,7 @@ const EditPet = () => {
       .then((response) => {
         console.log(response.data);
         navigate(`/pets/${response.data._id}`);
+        alert("Updated Successfully!")
       })
       .catch((err) => {
         console.log(err);

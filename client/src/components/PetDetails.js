@@ -27,6 +27,7 @@ const PetDetails = () => {
       .then((response) => {
         console.log(response.data);
         setAllPets(allPets.filter((pet) => pet._id !== id));
+        alert("Thanks for adopting this pet..Visit again!")
         navigate("/pets");
       })
       .catch((err) => {

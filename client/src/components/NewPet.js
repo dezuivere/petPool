@@ -30,6 +30,7 @@ const NewPet = () => {
             });
             
             console.log(response.data);
+            alert("Pet added successfully!")
             navigate("/pets");
         } catch (err) {
             console.error(err);
@@ -44,7 +45,7 @@ const NewPet = () => {
     return (
         <div className="container">
             <div className="header">
-                <h1>Pet Shelter</h1>
+                <h1>petPool</h1>
                 <Link to="/pets">Home</Link>
             </div>
             <div className="sub-header">
