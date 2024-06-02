@@ -22,7 +22,7 @@ const PetStore = () => {
   return (
     <div className="container">
       <div className="header">
-        <h1>Pet Shelter</h1>
+        <h1>petPool</h1>
         <Link to="/pets/new">Add Pet</Link>
       </div>
       <div className="sub-header">
